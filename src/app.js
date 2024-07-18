@@ -1,7 +1,7 @@
 import express from "express";
 import { engine } from 'express-handlebars';
 import { Server } from 'socket.io';
-import productsRouter, { getProducts,deleteProduct,guardarProducts} from "./routes/products.routes.js";
+import productsRouter from "./routes/products.routes.js";
 import cartsRouter from "./routes/carts.routes.js";
 import viewsRouter from "./routes/vistas.routes.js";
 import './db.connection.js';
@@ -27,6 +27,9 @@ app.use('/',viewsRouter);
 const httpServer = app.listen(PORT, () => 
     console.log(`Server listening on port: ${PORT}`));
 
+import ProductManager from "./dao/fs/product-manager.js";
+const productManager = new ProductManager("./src/models/products.json")
+
 const io = new Server(httpServer);
 
 io.on ('connection', async (socket) => {
@@ -48,7 +51,7 @@ socket.on('guardarProducts', async (product) => {
     products.push(newProduct);
     guardarProducts(products);
     io.sockets.emit('products', await getProducts());
-  });
+  })
   
 // se actualiza la vista
 

@@ -1,4 +1,4 @@
-import ProductModel from "../models/product.model.js";
+import ProductModel from "../fs/data/product.model.js";
 
 class ProductManager {
   async addProduct({ title, description, price, img, code, stock, category }) {
@@ -29,14 +29,15 @@ class ProductManager {
       throw error;
     }
   }
-  async getProducts() {
-    try {
-      const arrayProductos = await ProductModel.find();
-      return arrayProductos;
-    } catch (error) {
-      console.log("Error al obtener los productos", error);
-      throw error;
-    }
+  async getProducts( filter = {}, options = {}) {
+try {
+  const result = await ProductModel.paginate(filter,options);
+  result.docs = result.docs.map(doc => doc.toObject());
+  return result;
+} catch (error) {
+  console.log('no se obtuvieron los productos', error);
+  throw error;
+}
   }
 
   async getProductbyId(id) {
