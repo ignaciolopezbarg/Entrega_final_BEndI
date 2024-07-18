@@ -1,0 +1,98 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+  }
+#titulo{
+display: flex;
+justify-content: center;
+}
+span{
+    font-size: xx-large;
+    margin :auto,30px;
+    color :blue;
+    text-align: center;
+    border: 2px solid black;
+    border-radius: 5px;
+    background-color: rgba(31, 29, 28, 0.142);
+    padding: 20px;
+}
+
+.contenedor{
+    display: block;
+    /* justify-content: space-between; */
+    align-items: center;
+}
+.tarjeta{
+    border: 2px solid blue;
+    display: flex;
+    justify-content: space-evenly;
+    margin: 10px;
+    padding: 3px;
+}
+#productoForm {
+   
+    
+    margin: 20px 100px;
+    padding: 20px ;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    width: 300px;
+  }
+  
+  #productoForm input,
+  #productoForm select,
+  #productoForm button {
+    display: block;
+    margin: 10px 0;
+    padding: 10px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  #productoForm button {
+    background-color: #0c980e;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  #productoForm button:hover {
+    background-color: rgb(230, 56, 56);
+  }
+  
+  /* Estilos para las tarjetas */
+  .card {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 20px;
+    margin: 10px 0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+  }
+  
+  .card p {
+    margin: 10px 0;
+    color: #333;
+    font-family: Arial, sans-serif;
+  }
+  
+  .item-id, .item-title, .item-description, .item-price, .item-stock, .item-code {
+    font-weight: bold;
+  }
+  
+  .delete-button {
+    display: inline-block;
+    padding: 10px 20px;
+    margin-top: 10px;
+    /* color: #fff; */
+    background-color: #ff4d4d;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .delete-button:hover {
+    background-color: #ff1a2d;
+  }

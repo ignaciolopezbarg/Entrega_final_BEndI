@@ -1,0 +1,38 @@
+[
+  {
+    "cid": 1,
+    "prodsAgregado": [
+      {
+        "product": 1,
+        "quantity": 2
+      }
+    ]
+  },
+  {
+    "cid": 2,
+    "prodsAgregado": [
+      {
+        "product": 2,
+        "quantity": 5
+      }
+    ]
+  },
+  {
+    "cid": 3,
+    "prodsAgregado": [
+      {
+        "product": 3,
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "cid": 4,
+    "prodsAgregado": [
+      {
+        "product": 4,
+        "quantity": 5
+      }
+    ]
+  }
+]

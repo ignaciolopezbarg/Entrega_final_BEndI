@@ -1,0 +1,17 @@
+<div id="titulo">
+  <span>Lista de Productos</span>
+</div>
+
+<div class="contenedor"></div>
+{{#each products}}
+  <div class="tarjeta">
+    <p> Titulo: {{this.title}}</p>
+    <p> Descripcion: {{this.description}}</p>
+    <p> Precio $: {{this.price}}</p>
+    <p> Codigo: {{this.code}}</p>
+    <p> Cantidad existente: {{this.stock}}</p>
+    <p> Categoria: {{this.category}}</p>
+  </div>
+{{/each}}
+
+<script src="js/home.js"></script>

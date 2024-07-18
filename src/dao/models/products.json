@@ -1,0 +1,110 @@
+[
+  {
+  
+    "title": "Messi",
+    "description": "funko coleccionable",
+    "code": "AS1011",
+    "price": 50650,
+    "stock": 40,
+    "category": "sports",
+    "img": "no hay imagenes",
+    "status": true
+  },
+  {
+   
+    "title": "Dibu",
+    "description": "funko-seleccion",
+    "price": "15500",
+    "img": "",
+    "stock": "200",
+    "category": "SPORTS",
+    "code": "LOP251f",
+    "status": true
+  },
+  {
+   
+    "title": "Cuti",
+    "description": "funkos-seleccion",
+    "price": "15000",
+    "img": "",
+    "stock": "30",
+    "category": "sports",
+    "code": "AFC123",
+    "status": true
+  },
+  {
+   
+    "title": "Scaloni",
+    "description": "funkos-seleccion",
+    "price": "10000",
+    "img": "",
+    "stock": "15",
+    "category": "sports",
+    "code": "GH21",
+    "status": true
+  },
+  {
+  
+    "title": "Otamendi",
+    "description": "funkos-seleccion",
+    "price": "8000",
+    "img": "",
+    "stock": "5",
+    "category": "sports",
+    "code": "AR101",
+    "status": true
+  },
+  {
+   
+    "title": "El-Diego",
+    "description": "funkos-coleccion",
+    "price": "20000",
+    "img": "",
+    "stock": "25",
+    "category": "leyendas",
+    "code": "RA1",
+    "status": true
+  },
+  {
+   
+    "title": "Gallardo",
+    "description": "Funkos-muñeco",
+    "price": "25000",
+    "img": "",
+    "stock": "25",
+    "category": "sports",
+    "code": "MKO12",
+    "status": true
+  },
+  {
+ 
+    "title": "julian",
+    "description": "funkos-seleccion",
+    "price": "12500",
+    "img": "",
+    "stock": "15",
+    "category": "sports",
+    "code": "GJ125",
+    "status": true
+  },
+  {
+  
+    "title": "lauti",
+    "description": "funko-seleccion",
+    "price": "12500",
+    "img": "",
+    "stock": "150",
+    "category": "sports",
+    "code": "GJ126"
+  },
+  {
+    
+    "title": "armani",
+    "description": "funkos-seleccion",
+    "price": "5500",
+    "img": "",
+    "stock": "5",
+    "category": "sports",
+    "code": "FA101"
+  }
+]
