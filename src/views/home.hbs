@@ -1,17 +1,35 @@
-<div id="titulo">
-  <span>Lista de Productos</span>
-</div>
+<div class="container">
+    <h1>TODOS LOS PRODUCTOS</h1>
 
-<div class="contenedor"></div>
-{{#each products}}
-  <div class="tarjeta">
-    <p> Titulo: {{this.title}}</p>
-    <p> Descripcion: {{this.description}}</p>
-    <p> Precio $: {{this.price}}</p>
-    <p> Codigo: {{this.code}}</p>
-    <p> Cantidad existente: {{this.stock}}</p>
-    <p> Categoria: {{this.category}}</p>
-  </div>
-{{/each}}
+    <ul class="product-list">
+        {{#each docs}}
+        <li class="product-item">
+            <p><strong>ID:</strong> {{_id}}</p>
+            <p><strong>Título:</strong> {{title}}</p>
+            <p><strong>Descripción:</strong> {{description}}</p>
+            <p><strong>Precio:</strong> {{price}}</p>
+            <p><strong>Código:</strong> {{code}}</p>
+            <p><strong>Stock:</strong> {{stock}}</p>
+            <p><strong>Categoría:</strong> {{category}}</p>
+            <form action="/api/carts/:cid/products/{{_id}}" method="post">
+                <input type="hidden" name="quantity" value="1">
+                <button type="submit">Agregar al carrito</button>
+            </form>
+        </li>
+        {{else}}
+        <li class="product-item">No hay productos disponibles.</li>
+        {{/each}}
+    </ul>
 
-<script src="js/home.js"></script>
+    <div class="pagination">
+        {{#if hasPrevPage}}
+        <a href="/productos?page={{prevPage}}&limit={{limit}}&sort={{sort}}">Anterior</a>
+        {{/if}}
+
+        <span>Página {{page}} de {{totalPages}}</span>
+
+        {{#if hasNextPage}}
+        <a href="/productos?page={{nextPage}}&limit={{limit}}&sort={{sort}}">Siguiente</a>
+        {{/if}}
+    </div>
+</div> 
