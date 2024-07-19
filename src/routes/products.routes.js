@@ -21,6 +21,49 @@ router.get("/", async (req, res) => {
   }
 });
 
+//Ruta para traer los productos con paginacion, limite, filtro y ordenamiento:
+router.get('/', async (req,res) => {
+  try {
+    const { limit = 3, page = 1, sort,query } = req.query;
+    const filter = [];
+
+    if(query){
+      const queryObject = JSON.parse(query);
+      Object.assign(filter, queryObject);  
+    }
+    const sortOption = sort === 'asc' ? {price:1} : sort ==='desc' ? {price:-1} : {};
+    const options ={
+      page: parseInt(page,5),
+      limit: parseInt(limit, 3),
+      sort: sortOption
+    };
+
+    const result = await productManager.getProducts(filter, options);
+
+    const response = {
+      status: 'success',
+      payload: result.docs,
+      totalPages: result.totalPages,
+      prevPage: result.hasPrevPage ? result.hasPrevPage : null,
+      nextPage: result.hasNextPage ? result.nextPage : null,
+      page: result.page,
+      hasPrevPage: result.hasPrevPage,
+      hasNextPage: result.hasNextPage,
+      prevLink: result.hasPrevPage ? `/api/products?limit=${limit}&page=${result.prevPage}&sort={$sort}&query={$query}` : null,
+      nextLink: result.hasNextPage ? `/api/products?limit=${limit}&page=${result.nextPage}&sort={$sort}&query={$query}` : null
+    };
+
+    res.json(response);
+  } catch (error) {
+    console.log('error al buscar los productos', error)
+    res.status(500).json({
+      error : 'error del server'
+    });
+  }
+})
+
+
+
 //Ruta para cargar un producto por id
 router.get("/pid", async (req, res) => {
   const id = req.params.pid;
