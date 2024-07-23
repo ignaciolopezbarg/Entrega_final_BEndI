@@ -5,36 +5,22 @@ const router = express.Router();
 import ProductManager from "../dao/db/product-manager-db.js";
 const productManager = new ProductManager();
 
-//Ruta para traer los productos cuando se carguen al servidor
-router.get("/", async (req, res) => {
-  try {
-    const limit = req.query.limit;
-    const products = await productManager.getProducts();
-    if (limit) {
-      res.json(products.slice(0, limit));
-    } else {
-      res.json(products);
-    }
-  } catch (error) {
-    console.log("error al obtener los productos", error);
-    res.status(500).json({ error: "error del server" });
-  }
-});
+
 
 //Ruta para traer los productos con paginacion, limite, filtro y ordenamiento:
 router.get('/', async (req,res) => {
   try {
-    const { limit = 3, page = 1, sort,query } = req.query;
-    const filter = [];
+    const { limit = 10, page = 1, sort,query } = req.query;
+    const filter = {};
 
     if(query){
       const queryObject = JSON.parse(query);
       Object.assign(filter, queryObject);  
     }
-    const sortOption = sort === 'asc' ? {price:1} : sort ==='desc' ? {price:-1} : {};
+    const sortOption = sort === 'asc' ? { price: 1 } : sort ==='desc' ? { price: -1} : {};
     const options ={
-      page: parseInt(page,5),
-      limit: parseInt(limit, 3),
+      page: parseInt(page, 10),
+      limit: parseInt(limit, 10),
       sort: sortOption
     };
 
@@ -49,10 +35,10 @@ router.get('/', async (req,res) => {
       page: result.page,
       hasPrevPage: result.hasPrevPage,
       hasNextPage: result.hasNextPage,
-      prevLink: result.hasPrevPage ? `/api/products?limit=${limit}&page=${result.prevPage}&sort={$sort}&query={$query}` : null,
-      nextLink: result.hasNextPage ? `/api/products?limit=${limit}&page=${result.nextPage}&sort={$sort}&query={$query}` : null
-    };
-
+      prevLink: result.hasPrevPage ? `/api/products?limit=${limit}&page=${result.prevPage}&sort=${sort}&query=${query}` : null,
+      nextLink: result.hasNextPage ? `/api/products?limit=${limit}&page=${result.nextPage}&sort=${sort}&query=${query}` : null
+        };
+      
     res.json(response);
   } catch (error) {
     console.log('error al buscar los productos', error)
@@ -60,7 +46,7 @@ router.get('/', async (req,res) => {
       error : 'error del server'
     });
   }
-})
+});
 
 
 
@@ -106,7 +92,7 @@ router.put("/:id",async (req, res) => {
   const newInfo = req.body;
 
 try {
-  await productManager.updateProduct(id,newInfo);
+  await productManager.updateProduct(productId,newInfo);
   res.json({
     message: 'Producto actualizado con exito'
   });
