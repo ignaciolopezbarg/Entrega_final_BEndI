@@ -3,8 +3,49 @@ import express from "express";
 const router = express.Router();
 
 import ProductManager from "../dao/db/product-manager-db.js";
+import ProductModel from "../dao/fs/data/product.model.js";
 const productManager = new ProductManager();
 
+
+
+router.get('/', async(req, res) => {
+  console.log("Accediendo a la ruta /products");
+  const page = parseInt(req.query.page) || 1;
+  const limit = 2;
+
+  try {
+    const options = {
+      page: page,
+      limit: limit,
+      lean: true
+    };
+
+    const listadoProductos = await ProductModel.paginate({}, options);
+    console.log("Productos obtenidos:", JSON.stringify(listadoProductos, null, 2));
+
+    const totalPages = listadoProductos.totalPages;
+    const prevPage = listadoProductos.hasPrevPage ? listadoProductos.prevPage : null;
+    const nextPage = listadoProductos.hasNextPage ? listadoProductos.nextPage : null;
+    const prevLink = prevPage ? `/products?page=${prevPage}` : null;
+    const nextLink = nextPage ? `/products?page=${nextPage}` : null;
+
+    res.render('home', {
+      products: listadoProductos.docs,
+      hasPrevPage: listadoProductos.hasPrevPage,
+      hasNextPage: listadoProductos.hasNextPage,
+      prevPage,
+      nextPage,
+      currentPage: listadoProductos.page,
+      totalPages,
+      prevLink,
+      nextLink
+    });
+  }
+  catch(error) {
+    console.error('Error al buscar los productos', error);
+    res.status(500).render('error', { message: 'No nos pudimos conectar a la BD' });
+  }
+});
 
 
 //Ruta para traer los productos con paginacion, limite, filtro y ordenamiento:

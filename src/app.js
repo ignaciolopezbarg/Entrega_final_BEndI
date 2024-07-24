@@ -1,5 +1,5 @@
 import express from "express";
-import { engine } from 'express-handlebars';
+import {engine} from 'express-handlebars';
 import { Server } from 'socket.io';
 import productsRouter from "./routes/products.routes.js";
 import cartsRouter from "./routes/carts.routes.js";
@@ -16,12 +16,12 @@ app.use(express.static('./src/public'));
 
 // Motores de Plantilla
 app.engine('.hbs', engine({ extname: '.hbs' }));
-app.set('view engine', '.hbs');
+app.set('view engine', 'hbs');
 app.set('views','./src/views');
 
 
-app.use("/api/products", productsRouter);
-app.use("/api/carts", cartsRouter);
+app.use("/products", productsRouter);
+app.use("/carts", cartsRouter);
 app.use('/',viewsRouter);
 
 const httpServer = app.listen(PORT, () => 
