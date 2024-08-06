@@ -20,8 +20,8 @@ app.set('view engine', 'hbs');
 app.set('views','./src/views');
 
 
-app.use("/products", productsRouter);
-app.use("/carts", cartsRouter);
+app.use("/api/products", productsRouter);
+app.use("/api/carts", cartsRouter);
 app.use('/',viewsRouter);
 
 const httpServer = app.listen(PORT, () => 

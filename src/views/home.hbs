@@ -1,32 +1,33 @@
 
+<h1 class="text-3xl font-bold mb-6 text-center">Listado de productos</h1>
 
-<h1>Listado de productos</h1>
+<div class="container mx-auto pt-4 px-4 bg-slate-400">
+  <ul class="space-y-4">
+    {{#each products}}
+      <li class="max-w-md mx-auto  bg-slate-200 border border-gray-100 p-4 rounded-lg ">
+        <h2 class="text-xl font-semibold">{{this.title}}</h2>
+        <p class="text-gray-700">{{this.description}}</p>
+        <p class="text-gray-800 font-bold">Precio: ${{this.price}}</p>
+        <p class="text-gray-600">Stock: {{this.stock}}</p>
+        <p class="text-gray-500">Código: {{this.code}}</p>
+        <p class="text-gray-500">Categoría: {{this.category}}</p>
+      </li>
+    {{/each}}
+  </ul>
 
-<ul>
-  {{#each products}}
-    <li>
-      <h2>{{this.title}}</h2>
-      <p>{{this.description}}</p>
-      <p>Precio: {{this.price}}</p>
-      <p>Stock: {{this.stock}}</p>
-      <p>Código: {{this.code}}</p>
-      <p>Categoría: {{this.category}}</p>
-    </li>
-  {{/each}}
-</ul>
+  <div class="mt-6 flex items-center justify-center space-x-4">
+    {{#if hasPrevPage}}
+      <a href="/api/products?page={{prevPage}}" class="bg-blue-500 text-white mb-4 px-4 py-2 rounded-md hover:bg-blue-700 ">Anterior</a>
+    {{else}}
+      <span class="text-gray-400 ">Anterior</span>
+    {{/if}}
 
-<div class="pagination">
-  {{#if hasPrevPage}}
-    <a href="{{prevLink}}">Anterior</a>
-  {{else}}
-    <span>Anterior</span>
-  {{/if}}
+    <span>Pagina {{currentPage}} de {{totalPages}}</span>
 
-  <span>Página {{currentPage}} de {{totalPages}}</span>
-
-  {{#if hasNextPage}}
-    <a href="{{nextLink}}">Siguiente</a>
-  {{else}}
-    <span>Siguiente</span>
-  {{/if}}
+    {{#if hasNextPage}}
+      <a href="/api/products?page={{nextPage}}" class="bg-blue-500 text-white mb-4 px-4 py-2 rounded-md hover:bg-blue-700 ">Siguiente</a>
+    {{else}}
+      <span class="text-gray-400 ">Siguiente</span>
+    {{/if}}
+  </div>
 </div>

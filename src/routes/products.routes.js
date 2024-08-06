@@ -1,15 +1,35 @@
 import express from "express";
-
-const router = express.Router();
-
+import mongoose from "mongoose";
 import ProductManager from "../dao/db/product-manager-db.js";
 import ProductModel from "../dao/fs/data/product.model.js";
+
+const router = express.Router();
 const productManager = new ProductManager();
+const { ObjectId } = mongoose.Types;
 
+router.get("/:pid", async (req, res) => {
+  const id = req.params.pid;
 
+  // Validación del ID usando Mongoose
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({ error: "ID de producto no válido" });
+  }
 
-router.get('/', async(req, res) => {
-  console.log("Accediendo a la ruta /products");
+  try {
+    const producto = await ProductModel.findById(id);
+    if (!producto) {
+      return res.status(404).json({ error: "Producto no encontrado" });
+    }
+    res.json(producto);
+  } catch (error) {
+    console.error("Error al buscar el producto por id", error);
+    res.status(500).json({ error: "Error del servidor" });
+  }
+});
+
+//  Ruta para obtener todos los productos con paginación
+router.get("/", async (req, res) => {
+  // console.log("Accediendo a la ruta /products");
   const page = parseInt(req.query.page) || 1;
   const limit = 2;
 
@@ -17,19 +37,26 @@ router.get('/', async(req, res) => {
     const options = {
       page: page,
       limit: limit,
-      lean: true
+      lean: true,
     };
 
     const listadoProductos = await ProductModel.paginate({}, options);
-    console.log("Productos obtenidos:", JSON.stringify(listadoProductos, null, 2));
+    console.log(
+      "Productos obtenidos:",
+      JSON.stringify(listadoProductos, null, 2)
+    );
 
     const totalPages = listadoProductos.totalPages;
-    const prevPage = listadoProductos.hasPrevPage ? listadoProductos.prevPage : null;
-    const nextPage = listadoProductos.hasNextPage ? listadoProductos.nextPage : null;
+    const prevPage = listadoProductos.hasPrevPage
+      ? listadoProductos.prevPage
+      : null;
+    const nextPage = listadoProductos.hasNextPage
+      ? listadoProductos.nextPage
+      : null;
     const prevLink = prevPage ? `/products?page=${prevPage}` : null;
     const nextLink = nextPage ? `/products?page=${nextPage}` : null;
 
-    res.render('home', {
+    res.render("home", {
       products: listadoProductos.docs,
       hasPrevPage: listadoProductos.hasPrevPage,
       hasNextPage: listadoProductos.hasNextPage,
@@ -38,134 +65,154 @@ router.get('/', async(req, res) => {
       currentPage: listadoProductos.page,
       totalPages,
       prevLink,
-      nextLink
+      nextLink,
     });
-  }
-  catch(error) {
-    console.error('Error al buscar los productos', error);
-    res.status(500).render('error', { message: 'No nos pudimos conectar a la BD' });
+  } catch (error) {
+    console.error("Error al buscar los productos", error);
+    res
+      .status(500)
+      .render("error", { message: "No nos pudimos conectar a la BD" });
   }
 });
 
-
-//Ruta para traer los productos con paginacion, limite, filtro y ordenamiento:
-router.get('/', async (req,res) => {
+// Ruta para obtener productos con paginación, límite, filtro y ordenamiento
+router.get("/", async (req, res) => {
   try {
-    const { limit = 10, page = 1, sort,query } = req.query;
+    const { limit = 2, page = 10, sort, query } = req.query;
     const filter = {};
 
-    if(query){
+    if (query) {
       const queryObject = JSON.parse(query);
-      Object.assign(filter, queryObject);  
+      Object.assign(filter, queryObject);
     }
-    const sortOption = sort === 'asc' ? { price: 1 } : sort ==='desc' ? { price: -1} : {};
-    const options ={
+
+    const sortOption =
+      sort === "asc" ? { price: 1 } : sort === "desc" ? { price: -1 } : {};
+    const options = {
       page: parseInt(page, 10),
-      limit: parseInt(limit, 10),
-      sort: sortOption
+      limit: parseInt(limit, 2),
+      sort: sortOption,
     };
 
     const result = await productManager.getProducts(filter, options);
 
     const response = {
-      status: 'success',
+      status: "success",
       payload: result.docs,
       totalPages: result.totalPages,
-      prevPage: result.hasPrevPage ? result.hasPrevPage : null,
+      prevPage: result.hasPrevPage ? result.prevPage : null,
       nextPage: result.hasNextPage ? result.nextPage : null,
       page: result.page,
       hasPrevPage: result.hasPrevPage,
       hasNextPage: result.hasNextPage,
-      prevLink: result.hasPrevPage ? `/api/products?limit=${limit}&page=${result.prevPage}&sort=${sort}&query=${query}` : null,
-      nextLink: result.hasNextPage ? `/api/products?limit=${limit}&page=${result.nextPage}&sort=${sort}&query=${query}` : null
-        };
-      
+      prevLink: result.hasPrevPage
+        ? `/api/products?limit=${limit}&page=${result.prevPage}&sort=${sort}&query=${query}`
+        : null,
+      nextLink: result.hasNextPage
+        ? `/api/products?limit=${limit}&page=${result.nextPage}&sort=${sort}&query=${query}`
+        : null,
+    };
+
     res.json(response);
   } catch (error) {
-    console.log('error al buscar los productos', error)
-    res.status(500).json({
-      error : 'error del server'
-    });
-  }
-});
-
-
-
-//Ruta para cargar un producto por id
-router.get("/pid", async (req, res) => {
-  const id = req.params.pid;
-
-  try {
-    const producto = await productManager.getProductbyId(id);
-    if (!producto) {
-      return res.json({
-        error: "Producto no encontrado",
-      });
-    }
-    res.json(producto);
-  } catch (error) {
-    console.log("Error al buscar el producto por id", error);
-    res.status(500).json({
-      error: "Error en el servidor",
-    });
-  }
-});
-
-//Ruta para cargar un nuevo producto:
-router.post("/", async (req, res) => {
-  const nuevoProducto = req.body;
-  try {
-    await productManager.addProduct(nuevoProducto);
-    res.status(200).json({
-      message: "Se cargo un nuevo producto",
-    });
-  } catch (error) {
-    console.log("Error al cargar el nuevo producto", error);
+    console.error("Error al buscar los productos", error);
     res.status(500).json({
       error: "Error del server",
     });
   }
 });
 
-//ruta para modificacion de algun producto por id:
-router.put("/:id",async (req, res) => {
+// Ruta para obtener un producto por ID
+router.get("/:pid", async (req, res) => {
+  const id = req.params.pid;
+
+  if (!ObjectId.isValid(id)) {
+    return res.status(400).json({ error: "ID de producto no válido" });
+  }
+
+  try {
+    const producto = await ProductModel.findById(id);
+    if (!producto) {
+      return res.status(404).json({ error: "Producto no encontrado" });
+    }
+    res.json(producto);
+  } catch (error) {
+    console.error("Error al buscar el producto por id", error);
+    res.status(500).json({ error: "Error del servidor" });
+  }
+});
+
+router.get("/:pid", async (req, res) => {
+  const id = req.params.pid;
+});
+
+// Ruta para cargar un nuevo producto
+router.post("/", async (req, res) => {
+  const nuevoProducto = req.body;
+  try {
+    await productManager.addProduct(nuevoProducto);
+    res.status(200).json({
+      message: "Se cargó un nuevo producto",
+    });
+  } catch (error) {
+    console.error("Error al cargar el nuevo producto", error);
+    res.status(500).json({
+      error: "Error del server",
+    });
+  }
+});
+
+// Ruta para modificar un producto por ID
+router.put("/:pid", async (req, res) => {
   const productId = req.params.pid;
   const newInfo = req.body;
 
-try {
-  await productManager.updateProduct(productId,newInfo);
-  res.json({
-    message: 'Producto actualizado con exito'
-  });
-} catch (error) {
-  console.log('Error al actualizar el producto', error)
-  res.status(500).json({
-    error: 'Error del server'
-  })
-}
+  // Validación del ID
+  if (!ObjectId.isValid(productId)) {
+    return res.status(400).json({ error: "ID de producto no válido" });
+  }
+
+  try {
+    await productManager.updateProduct(productId, newInfo);
+    res.json({
+      message: "Producto actualizado con éxito",
+    });
+  } catch (error) {
+    console.error("Error al actualizar el producto", error);
+    res.status(500).json({
+      error: "Error del server",
+    });
+  }
 });
 
-//ruta para eliminar algun producto:
+///////////////////////////////////////////////////////////
+const products = await ProductModel.find({ category: "sports" })
+  .sort({ price: 1 })
+  .limit(2)
+  .skip(0);
+console.log("Productos encontrados:", products);
+//////////////////////////////////////////////////////////////////////////
 
+// Ruta para eliminar un producto por ID
 router.delete("/:pid", async (req, res) => {
   const id = req.params.pid;
 
-try {
-  await productManager.deleteProduct(id);
-  res.json({
-    message: 'Producto eliminado con exito'
-  });
-} catch (error) {
-  console.log('Error al eliminar el producto', error)
-  res.status(500).json({
-    error: 'Error del server'
-  });
-}
-});
+  // Validación del ID
+  if (!ObjectId.isValid(id)) {
+    return res.status(400).json({ error: "ID de producto no válido" });
+  }
 
-// Ruta que no está definida, da un aviso:
-router.get("*", (req, res) => {
-  res.status(404).send("Ruta no definida");
+  try {
+    await productManager.deleteProduct(id);
+    res.json({
+      message: "Producto eliminado con éxito",
+    });
+  } catch (error) {
+    console.error("Error al eliminar el producto", error);
+    res.status(500).json({
+      error: "Error del server",
+    });
+  }
 });
 
 export default router;
