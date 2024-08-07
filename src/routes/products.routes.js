@@ -5,31 +5,31 @@ import ProductModel from "../dao/fs/data/product.model.js";
 
 const router = express.Router();
 const productManager = new ProductManager();
-const { ObjectId } = mongoose.Types;
+// const { ObjectId } = mongoose.Types;
 
-router.get("/:pid", async (req, res) => {
-  const id = req.params.pid;
+// router.get("/:pid", async (req, res) => {
+//   const id = req.params.pid;
 
-  // Validación del ID usando Mongoose
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(400).json({ error: "ID de producto no válido" });
-  }
+//   // Validación del ID usando Mongoose
+//   if (!mongoose.Types.ObjectId.isValid(id)) {
+//     return res.status(400).json({ error: "ID de producto no válido" });
+//   }
 
-  try {
-    const producto = await ProductModel.findById(id);
-    if (!producto) {
-      return res.status(404).json({ error: "Producto no encontrado" });
-    }
-    res.json(producto);
-  } catch (error) {
-    console.error("Error al buscar el producto por id", error);
-    res.status(500).json({ error: "Error del servidor" });
-  }
-});
+//   try {
+//     const producto = await ProductModel.findById(id);
+//     if (!producto) {
+//       return res.status(404).json({ error: "Producto no encontrado" });
+//     }
+//     res.json(producto);
+//   } catch (error) {
+//     console.error("Error al buscar el producto por id", error);
+//     res.status(500).json({ error: "Error del servidor" });
+//   }
+// });
 
-//  Ruta para obtener todos los productos con paginación
+//   Ruta para obtener todos los productos con paginación
 router.get("/", async (req, res) => {
-  // console.log("Accediendo a la ruta /products");
+
   const page = parseInt(req.query.page) || 1;
   const limit = 2;
 
@@ -126,7 +126,7 @@ router.get("/", async (req, res) => {
 router.get("/:pid", async (req, res) => {
   const id = req.params.pid;
 
-  if (!ObjectId.isValid(id)) {
+  if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(400).json({ error: "ID de producto no válido" });
   }
 
@@ -168,7 +168,7 @@ router.put("/:pid", async (req, res) => {
   const newInfo = req.body;
 
   // Validación del ID
-  if (!ObjectId.isValid(productId)) {
+  if (!mongoose.Types.ObjectId.isValid(productId)) {
     return res.status(400).json({ error: "ID de producto no válido" });
   }
 
@@ -198,7 +198,7 @@ router.delete("/:pid", async (req, res) => {
   const id = req.params.pid;
 
   // Validación del ID
-  if (!ObjectId.isValid(id)) {
+  if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(400).json({ error: "ID de producto no válido" });
   }
 

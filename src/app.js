@@ -19,7 +19,6 @@ app.engine('.hbs', engine({ extname: '.hbs' }));
 app.set('view engine', 'hbs');
 app.set('views','./src/views');
 
-
 app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
 app.use('/',viewsRouter);
